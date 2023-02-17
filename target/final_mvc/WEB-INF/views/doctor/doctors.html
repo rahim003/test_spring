@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Students</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+</head>
+<style>
+    .java8 {
+        text-align: start;
+    }
+</style>
+<body>
+<div class="container">
+    <h1 class="text-center">List of Students</h1>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>firstName</th>
+            <th>lastName</th>
+            <th>email</th>
+            <th>position</th>
+            <th>departments</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="doctor : ${doctors}">
+            <td th:text="${doctor.id}"></td>
+            <td th:text="${doctor.firstName}"></td>
+            <td th:text="${doctor.lastName}"></td>
+            <td th:text="${doctor.email}"></td>
+            <td th:text="${doctor.position}"></td>
+            <td th:text="${doctor.getDepartment()}"></td>
+
+            <td>
+                <form th:method="DELETE" th:action="@{/delete/{id}(id=${hospital.getId()})}">
+                    <input type="submit" value="delete"
+                           style="height: 40px; width: 80px; background-color:darkorange;"/>
+                </form>
+            </td>
+            <td><a th:href="@{/update/{id}(id=${hospital.getId()})}">
+                <button style="height: 40px; width: 80px; background-color:blue;">update</button>
+            </a>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+</div>
+<button style="text-align: right"><a class="rahim" href="/doctors/new">add hospital</a></button>
+<button style="text-align: left"><a class="rahim" href="/">back</a></button>
+
+</body>
+</html>

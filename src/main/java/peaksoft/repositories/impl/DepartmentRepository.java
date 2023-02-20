@@ -38,7 +38,7 @@ public class DepartmentRepository implements DepartmentRepo {
 
     @Override
     public void deleteById(Long id) {
-         entityManager.createQuery("delete from Department d where d.id=:id").executeUpdate();
+        entityManager.createQuery("delete from Department d where d.id=:id").setParameter("id", id).executeUpdate();
     }
 
     @Override
@@ -46,5 +46,13 @@ public class DepartmentRepository implements DepartmentRepo {
         final Department department1 = entityManager.find(Department.class, id);
         department1.setName(department.getName());
         return entityManager.merge(department1);
+    }
+
+    @Override
+    public List<Department> findAll(Long hospitalId) {
+        return
+                entityManager.createQuery("select d from Department d where d.hospital.id = ?1", Department.class)
+                        .setParameter(1, hospitalId)
+                        .getResultList();
     }
 }

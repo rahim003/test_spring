@@ -1,5 +1,6 @@
 package peaksoft.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,56 +11,61 @@ import peaksoft.servicies.HospitalService;
 
 import java.util.List;
 
+/**
+ * @author krasa kurbanov
+ * @created 17/02/2023 - 18:19
+ **/
 @Controller
+@RequestMapping("/departments")
 public class DepartmentController {
+
     private final DepartmentService departmentService;
     private final HospitalService hospitalService;
 
+    @Autowired
     public DepartmentController(DepartmentService departmentService, HospitalService hospitalService) {
         this.departmentService = departmentService;
         this.hospitalService = hospitalService;
     }
 
-    @GetMapping("/departments")
-    public String getAllDepartments(Model model) {
+    @GetMapping()
+    public String list(Model model) {
         List<Department> departments = departmentService.findAll();
         model.addAttribute("departments", departments);
-        return "department/departments";
+        return "department/department_list";
     }
 
-    @GetMapping("/departments/new")
-    public String showNewDepartmentForm(Model model) {
-        Department department = new Department();
+    @GetMapping("/new")
+    public String newDepartment(Model model) {
         List<Hospital> hospitals = hospitalService.findAll();
-        model.addAttribute("department", department);
         model.addAttribute("hospitals", hospitals);
-        return "department/new-department";
+        model.addAttribute("department", new Department());
+        return "department/new_department";
     }
 
-    @PostMapping("/departments/new")
-    public String addNewDepartment(@ModelAttribute("department") Department department, @RequestParam("hospitalId") Long hospitalId) {
-        departmentService.save(department, hospitalId);
+    @PostMapping("/departments/save")
+    public String save(@ModelAttribute("department") Department department) {
+        departmentService.save(department, department.getHospital().getId());
         return "redirect:/departments";
     }
 
     @GetMapping("/departments/{id}/edit")
-    public String showEditDepartmentForm(@PathVariable("id") Long id, Model model) {
-        Department department = departmentService.findById(id);
-        List<Hospital> hospitals = hospitalService.findAll();
+    public String editHospital(@PathVariable("id") Long id, Model model) {
+        final Department department = departmentService.findById(id);
         model.addAttribute("department", department);
-        model.addAttribute("hospitals", hospitals);
-        return "department/edit-department";
+        return "department/edit_department";
     }
 
-    @PostMapping("/departments/{id}/edit")
-    public String updateDepartment(@PathVariable("id") Long id, @ModelAttribute("department") Department department) {
+    @PostMapping("/department/{id}")
+    public String updateHospital(@PathVariable("id") Long id, @ModelAttribute("department") Department department) {
         departmentService.update(id, department);
         return "redirect:/departments";
     }
 
-    @DeleteMapping("/delete/{id}we")
-    public String deleteDepartment(@PathVariable("id") Long id) {
+    @GetMapping("/departments/{id}/delete")
+    public String deleteDepartment(@PathVariable Long id) {
         departmentService.deleteById(id);
         return "redirect:/departments";
     }
 }
+

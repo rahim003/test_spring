@@ -1,27 +1,22 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>List of Students</title>
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <title>List of Hospitals</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
 </head>
-<style>
-    .java8 {
-        text-align: start;
-    }
-</style>
 <body>
 <div class="container">
-    <h1 class="text-center">List of Students</h1>
-    <table class="table table-bordered table-striped">
+    <h1>List of Hospitals</h1>
+    <table class="table table-striped">
         <thead>
         <tr>
-            <th>id</th>
-            <th>name</th>
-            <th>address</th>
-            <th>delete</th>
-            <th>update</th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>
@@ -29,24 +24,17 @@
             <td th:text="${hospital.id}"></td>
             <td th:text="${hospital.name}"></td>
             <td th:text="${hospital.address}"></td>
-
             <td>
-                <form th:method="DELETE" th:action="@{/delete/{id}(id=${hospital.getId()})}">
-                    <input type="submit" value="delete"
-                           style="height: 40px; width: 80px; background-color:darkorange;"/>
+                <a th:href="@{/hospitals/hospitals/{id}/edit(id=${hospital.getId()})}" class="btn btn-primary">Edit</a>
+                <form th:action="@{hospitals/hospitals/{id}/delete(id=${hospital.getId()})}" style="display: inline">
+                    <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </td>
-            <td><a th:href="@{/update/{id}(id=${hospital.getId()})}">
-                <button style="height: 40px; width: 80px; background-color:blue;">update</button>
-            </a>
-            </td>
-
         </tr>
         </tbody>
     </table>
+    <a th:href="@{hospitals/new}" class="btn btn-success">Add Hospital</a>
+    <button style="text-align: left"><a class="rahim" href="/">back</a></button>
 </div>
-<button style="text-align: right"><a class="rahim" href="/add">add hospital</a></button>
-<button style="text-align: left"><a class="rahim" href="/">back</a></button>
-
 </body>
 </html>

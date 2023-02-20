@@ -11,14 +11,12 @@ import java.util.Set;
 import static jakarta.persistence.CascadeType.*;
 
 /**
- * ~ @created 15/02/2023
- * ~ @project_name final_mvc
- * ~ @author kurbanov
- **/
+ * @author Mukhammed Asantegin
+ */
 @Entity
 @Table(name = "departments")
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 public class Department {
     @Id
@@ -26,22 +24,17 @@ public class Department {
     @SequenceGenerator(name = "department_sequence", sequenceName = "department_seq", allocationSize = 1)
     private Long id;
     private String name;
-    @ManyToOne(cascade = {MERGE, PERSIST,DETACH,REFRESH},fetch = FetchType.EAGER)
-    private Hospital hospital;
     @ManyToMany(cascade = {DETACH, REFRESH, REMOVE}, fetch = FetchType.EAGER, mappedBy = "departments")
     private Set<Doctor> doctors = new HashSet<>();
+    @ManyToOne(cascade = {REFRESH, MERGE, PERSIST, DETACH})
+    private Hospital hospital;
+    @Transient
+    private Long hospitalId;
 
-    public Department(Long id, String name, Hospital hospital) {
-        this.id = id;
-        this.name = name;
-        this.hospital = hospital;
-    }
-
-    @Override
-    public String toString() {
-        return "Department{" +
-                "id=" + id +
-                ", name='" + name +"";
-
+    public void setDoctor(Doctor doctor) {
+        if (doctors == null) {
+            doctors = new HashSet<>();
+        }
+        doctors.add(doctor);
     }
 }

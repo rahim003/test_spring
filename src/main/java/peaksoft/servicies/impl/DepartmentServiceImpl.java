@@ -52,4 +52,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     public Department update(Long id, Department department) {
         return departmentRepo.update(id, department);
     }
+
+    @Override
+    public List<Department> findAll(Long hospitalId) {
+        return departmentRepo.findAll(hospitalId);
+    }
 }

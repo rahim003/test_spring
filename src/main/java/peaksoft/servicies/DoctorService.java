@@ -10,7 +10,7 @@ import java.util.List;
  * ~ @author kurbanov
  **/
 public interface DoctorService {
-    void saveDoctor(Doctor doctor,Long departmentId);
+    void saveDoctor(Doctor doctor, Long hospitalId);
 
     List<Doctor> findAll();
 
@@ -18,5 +18,7 @@ public interface DoctorService {
 
     Doctor findById(Long id);
 
-    Doctor updateHospital(Long id, Doctor doctor);
+    Doctor updateDoctor(Long id, Doctor doctor);
+
+    void assignDoctorToDepartment(Long departmentId, Long doctorId);
 }

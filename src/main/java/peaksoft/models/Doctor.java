@@ -5,21 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.FetchType.EAGER;
 
 /**
- * ~ @created 15/02/2023
- * ~ @project_name final_mvc
- * ~ @author kurbanov
- **/
+ * @author Mukhammed Asantegin
+ */
 @Entity
 @Table(name = "doctors")
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 public class Doctor {
     @Id
@@ -35,20 +32,18 @@ public class Doctor {
     @ManyToMany(cascade = {PERSIST, DETACH, REFRESH, MERGE}, fetch = EAGER)
     private Set<Department> departments;
 
+    @OneToMany(cascade = ALL)
+    private Set<Appointment> appointments;
+
     public Doctor(String firstName, String lastName, String position, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.position = position;
         this.email = email;
+
     }
 
     public void setDepartment(Department department) {
-        if (departments == null) {
-            departments = new HashSet<>();
-        }
         departments.add(department);
-    }
-    public Department getDepartment(){
-        return departments.stream().findAny().get();
     }
 }

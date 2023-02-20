@@ -19,4 +19,6 @@ public interface DepartmentRepo {
     void deleteById(Long id);
 
     Department update(Long id, Department department);
+
+    public List<Department> findAll(Long hospitalId);
 }

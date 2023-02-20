@@ -10,12 +10,11 @@ import peaksoft.servicies.HospitalService;
 import java.util.List;
 
 /**
- * ~ @created 15/02/2023
- * ~ @project_name final_mvc
- * ~ @author kurbanov
+ * @author krasa kurbanov
+ * @created 17/02/2023 - 17:18
  **/
 @Controller
-@RequestMapping("/")
+@RequestMapping("/hospitals")
 public class HospitalController {
 
     private final HospitalService hospitalService;
@@ -25,62 +24,56 @@ public class HospitalController {
         this.hospitalService = hospitalService;
     }
 
-
-    //Бул метод главный страничкага кирип берет
     @GetMapping()
-    public String welcome() {
-        return "index";
+    public String getHospitals(Model model) {
+        List<Hospital> hospitals = hospitalService.findAll();
+        model.addAttribute("hospitals", hospitals);
+        return "hospital/hospitalDepartments";
     }
 
-    //Баардык ооруканарды чыгарып берет
-    @GetMapping("/hospitals")
-    public String findAll(Model model) {
-        final List<Hospital> all = hospitalService.findAll();
-        model.addAttribute("hospitals", all);
-        return "hospital/hospitals";
+    @GetMapping("/new")
+    public String newHospital(Model model) {
+        model.addAttribute("hospital", new Hospital());
+        return "hospital/new_hospital";
     }
 
-    //html файлдан келет аны биз пост кылып
-    @GetMapping("/add")
-    public String createHospital(Model model) {
-        model.addAttribute("newHospital", new Hospital());
-        return "hospital/saveHospital";
-
-    }
-
-    //дата базага сактайбыз
     @PostMapping("/save")
-    public String saveHospital(@ModelAttribute("newHospital") Hospital hospital) {
+    public String createHospital(@ModelAttribute("hospital") Hospital hospital) {
         hospitalService.saveHospital(hospital);
         return "redirect:/hospitals";
     }
 
-    //delete by id
-    @PostMapping("/delete/{id}")
+    @GetMapping("/hospitals/{id}/edit")
+    public String editHospital(@PathVariable("id") Long id, Model model) {
+        Hospital hospital = hospitalService.findById(id);
+        model.addAttribute("hospital", hospital);
+        return "hospital/edit_hospital";
+    }
+
+    @PostMapping("/hospitals/{id}")
+    public String updateHospital(@PathVariable("id") Long id, @ModelAttribute("hospital") Hospital hospital) {
+        hospitalService.updateHospital(id, hospital);
+        return "redirect:/hospitals";
+    }
+
+    @GetMapping("/hospitals/{id}/delete")
     public String deleteHospital(@PathVariable("id") Long id) {
         hospitalService.deleteById(id);
         return "redirect:/hospitals";
     }
 
-    @GetMapping("/update/{id}")
-    public String updateCompany(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("hospital", hospitalService.findById(id));
-        return "hospital/updateHospital";
-    }
-
-
-    @PostMapping("{id}/updateHospital")
-    public String saveUpdateCompany(@PathVariable("id") Long id, @ModelAttribute("company") Hospital company) {
-        hospitalService.updateHospital(id, company);
-        return "redirect:/hospitals";
-    }
-
-    @GetMapping("/search")
-    public String searchByName(@RequestParam("name") String name, Model model) {
+    @GetMapping("/hospitals/search")
+    public String searchHospital(@RequestParam("name") String name, Model model) {
         List<Hospital> hospitals = hospitalService.searchByName(name);
         model.addAttribute("hospitals", hospitals);
-        model.addAttribute("name", name);
         return "hospital/hospitals";
     }
-
+    @GetMapping("/departments/doctors/{hospitalId}")
+    public String findDepartmentsAndDoctorsByHospitalId(Model model, @PathVariable Long hospitalId) {
+        final Hospital hospital = hospitalService.findById(hospitalId);
+        model.addAttribute("departments", hospital.getDepartments());
+        model.addAttribute("doctors", hospital.getDoctors());
+        return "/index";
+    }
 }
+

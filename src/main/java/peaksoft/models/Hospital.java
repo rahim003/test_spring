@@ -5,15 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
 /**
- * ~ @created 15/02/2023
- * ~ @project_name final_mvc
- * ~ @author kurbanov
- **/
+ * @author Mukhammed Asantegin
+ */
 @Entity
 @Table(name = "hospitals")
 @NoArgsConstructor
@@ -26,12 +29,19 @@ public class Hospital {
     private Long id;
     private String name;
     private String address;
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH,CascadeType.DETACH})
-    private List<Department> department;
+    @Column(length = 10000)
+    private String image;
+    @Column(name = "phone_number")
+    private String phoneNumber;
+    private LocalDate established_date;
+    @OneToMany(cascade = ALL, fetch = LAZY, mappedBy = "hospital")
+    private Set<Doctor> doctors;
+    @OneToMany(cascade = ALL, fetch = EAGER, mappedBy = "hospital")
+    private Set<Patient> patients = new HashSet<>();
+    @OneToMany(cascade = ALL, fetch = LAZY, mappedBy = "hospital")
+    private Set<Department> departments;
+    @OneToMany(cascade = ALL)
+    private Set<Appointment> appointments;
 
-    public Hospital(String name, String address) {
-        this.name = name;
-        this.address = address;
-    }
 
 }

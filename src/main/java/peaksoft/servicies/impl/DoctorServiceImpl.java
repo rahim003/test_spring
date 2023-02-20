@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import peaksoft.models.Department;
 import peaksoft.models.Doctor;
+import peaksoft.models.Hospital;
 import peaksoft.repositories.DepartmentRepo;
 import peaksoft.repositories.DoctorRepo;
+import peaksoft.repositories.HospitalRepo;
 import peaksoft.servicies.DoctorService;
 
 import java.util.List;
@@ -19,19 +21,22 @@ import java.util.List;
 @Service
 public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepo doctorRepo;
+    private final HospitalRepo hospitalRepo;
     private final DepartmentRepo departmentRepo;
 
     @Autowired
-    public DoctorServiceImpl(DoctorRepo doctorRepo, DepartmentRepo departmentRepo) {
+    public DoctorServiceImpl(DoctorRepo doctorRepo, HospitalRepo hospitalRepo, DepartmentRepo departmentRepo) {
         this.doctorRepo = doctorRepo;
+
+        this.hospitalRepo = hospitalRepo;
         this.departmentRepo = departmentRepo;
     }
 
     @Override
     @Transactional
-    public void saveDoctor(Doctor doctor, Long departmentId) {
-        final Department department = departmentRepo.findById(departmentId);
-        doctor.setDepartment(department);
+    public void saveDoctor(Doctor doctor, Long hospitalId) {
+        final Hospital hospital = hospitalRepo.findById(hospitalId);
+        doctor.setHospital(hospital);
         doctorRepo.saveDoctor(doctor);
     }
 
@@ -51,7 +56,16 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Doctor updateHospital(Long id, Doctor doctor) {
+    public Doctor updateDoctor(Long id, Doctor doctor) {
         return doctorRepo.updateHospital(id, doctor);
+    }
+
+    @Override
+    @Transactional
+    public void assignDoctorToDepartment(Long departmentId, Long doctorId) {
+        final Department department = departmentRepo.findById(departmentId);
+        final Doctor doctor = doctorRepo.findById(doctorId);
+        doctor.setDepartment(department);
+        department.setDoctor(doctor);
     }
 }

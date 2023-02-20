@@ -24,12 +24,12 @@ public class Department {
     @SequenceGenerator(name = "department_sequence", sequenceName = "department_seq", allocationSize = 1)
     private Long id;
     private String name;
+    private String image;
     @ManyToMany(cascade = {DETACH, REFRESH, REMOVE}, fetch = FetchType.EAGER, mappedBy = "departments")
     private Set<Doctor> doctors = new HashSet<>();
     @ManyToOne(cascade = {REFRESH, MERGE, PERSIST, DETACH})
     private Hospital hospital;
-    @Transient
-    private Long hospitalId;
+
 
     public void setDoctor(Doctor doctor) {
         if (doctors == null) {

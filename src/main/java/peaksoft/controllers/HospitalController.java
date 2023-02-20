@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import peaksoft.models.Department;
 import peaksoft.models.Hospital;
 import peaksoft.servicies.HospitalService;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author krasa kurbanov
@@ -68,6 +70,7 @@ public class HospitalController {
         model.addAttribute("hospitals", hospitals);
         return "hospital/hospitals";
     }
+
     @GetMapping("/departments/doctors/{hospitalId}")
     public String findDepartmentsAndDoctorsByHospitalId(Model model, @PathVariable Long hospitalId) {
         final Hospital hospital = hospitalService.findById(hospitalId);
@@ -75,5 +78,16 @@ public class HospitalController {
         model.addAttribute("doctors", hospital.getDoctors());
         return "/index";
     }
+
+    @GetMapping("/{hospitalId}/departments")
+    public String listDepartments(@PathVariable("hospitalId") Long hospitalId, Model model) {
+        Hospital hospital = hospitalService.findById(hospitalId);
+        Set<Department> departments = hospital.getDepartments();
+        model.addAttribute("hospital", hospital);
+        model.addAttribute("departments", departments);
+        return "hospital/departments";
+    }
 }
+
+
 
